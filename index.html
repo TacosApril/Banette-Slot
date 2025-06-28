@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-    <h1>スロカス</h1>
+    <h1>ひさ「肖像権侵害スロット」</h1>
     <div id="slots">
         <img id="slot1" src="images/hisa.png" width="100">
         <img id="slot2" src="images/hisa.png" width="100">
@@ -41,55 +41,35 @@
 
 
     <script>
-        const symbols = [
-            "hisa.png", "hisaspe.png", "kaitoshi.png",
-            "ken.png", "odaijini.png", "papa.png",
-            "pepa-.png", "tamago.png", "temiruspe.png"
+        // 各スロット（リール）の絵柄順（好きな順に並べてOK）
+        const reel1 = [
+            "papa.png", "temiruspe.png", "odaijini.png", "ken.png", "pepa-.png", "hisa.png"
+            , "temiruspe.png", "tamago.png", "papa.png", "hisa.png", "odaijini.png", "papa.png"
+            , "hisaspe.png", "ken.png", "pepa-.png", "temiruspe.png", "kaitoshi.png", "papa.png"
+            , "hisa.png", "papa.png", "temiruspe.png", "hisa.png", "odaijini.png", "tamago.png"
+            , "pepa-.png", "hisaspe.png", "kaitoshi.png", "odaijini.png", "hisaspe.png", "hisa.png"
         ];
+        const reel2 = [
+            "tamago.png", "hisa.png", "papa.png", "pepa-.png", "temiruspe.png", "odaijini.png",
+            "hisaspe.png", "hisa.png", "tamago.png", "papa.png", "ken.png", "hisaspe.png",
+            "papa.png", "hisa.png", "ken.png", "temiruspe.png", "kaitoshi.png", "hisa.png",
+            "papa.png", "hisa.png", "hisaspe.png", "odaijini.png", "tamago.png", "papa.png",
+            "pepa-.png", "hisa.png", "odaijini.png", "kaitoshi.png"
 
-        // 出現率（例）：hisaが出やすいように複数入れている
-        const s1Weights = [
-            "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png"
-            , "hisaspe.png", "hisaspe.png", "hisaspe.png"
-            , "kaitoshi.png", "kaitoshi.png"
-            , "ken.png", "ken.png"
-            , "odaijini.png", "odaijini.png", "odaijini.png", "odaijini.png"
-            , "papa.png", "papa.png", "papa.png", "papa.png", "papa.png", "papa.png", "papa.png"
-            , "pepa-.png", "pepa-.png", "pepa-.png"
-            , "tamago.png", "tamago.png"
-            , "temiruspe.png", "temiruspe.png", "temiruspe.png", "temiruspe.png"
         ];
+        const reel3 = [
+            "tamago.png", "ken.png", "hisa.png", "pepa-.png", "papa.png", "tamago.png",
+            "hisa.png", "odaijini.png", "temiruspe.png", "papa.png", "hisaspe.png", "tamago.png",
+            "kaitoshi.png", "hisa.png", "tamago.png", "pepa-.png", "hisa.png", "tamago.png",
+            "hisaspe.png", "papa.png", "tamago.png", "odaijini.png", "temiruspe.png", "ken.png",
+            "hisaspe.png", "pepa-.png", "tamago.png", "hisa.png", "kaitoshi.png", "tamago.png",
+            "odaijini.png", "hisa.png", "papa.png"
 
-        const s2Weights = [
-            "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png"
-            , "hisaspe.png", "hisaspe.png", "hisaspe.png"
-            , "kaitoshi.png", "kaitoshi.png"
-            , "ken.png", "ken.png"
-            , "odaijini.png", "odaijini.png", "odaijini.png"
-            , "papa.png", "papa.png", "papa.png", "papa.png", "papa.png"
-            , "pepa-.png", "pepa-.png"
-            , "tamago.png", "tamago.png", "tamago.png"
-            , "temiruspe.png", "temiruspe.png"
-        ];
-
-        const s3Weights = [
-            "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png"
-            , "hisaspe.png", "hisaspe.png", "hisaspe.png"
-            , "kaitoshi.png", "kaitoshi.png"
-            , "ken.png", "ken.png"
-            , "odaijini.png", "odaijini.png", "odaijini.png"
-            , "papa.png", "papa.png", "papa.png"
-            , "pepa-.png", "pepa-.png", "pepa-.png"
-            , "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png"
-            , "temiruspe.png", "temiruspe.png"
         ];
 
         let intervals = [];
         let stopCount = 0;
-
-        function getRandomSymbolFrom(array) {
-            return array[Math.floor(Math.random() * array.length)];
-        }
+        let indexes = [0, 0, 0]; // 各スロットの現在位置
 
         function spin() {
             document.getElementById("result").textContent = "";
@@ -97,15 +77,14 @@
             document.getElementById("startBtn").disabled = true;
             document.getElementById("stopBtn").disabled = false;
 
+            indexes = [0, 0, 0];
+
             for (let i = 1; i <= 3; i++) {
                 intervals[i] = setInterval(() => {
-                    let rand;
-                    if (i === 1) rand = getRandomSymbolFrom(s1Weights);
-                    else if (i === 2) rand = getRandomSymbolFrom(s2Weights);
-                    else rand = getRandomSymbolFrom(s3Weights);
-
-                    document.getElementById(`slot${i}`).src = `images/${rand}`;
-                }, 200);
+                    indexes[i - 1] = (indexes[i - 1] + 1) % getReel(i).length;
+                    const symbol = getReel(i)[indexes[i - 1]];
+                    document.getElementById(`slot${i}`).src = `images/${symbol}`;
+                }, 100);
             }
         }
 
@@ -114,12 +93,8 @@
 
             clearInterval(intervals[stopCount]);
 
-            let final;
-            if (stopCount === 1) final = getRandomSymbolFrom(s1Weights);
-            else if (stopCount === 2) final = getRandomSymbolFrom(s2Weights);
-            else final = getRandomSymbolFrom(s3Weights);
-
-            document.getElementById(`slot${stopCount}`).src = `images/${final}`;
+            const symbol = getReel(stopCount)[indexes[stopCount - 1]];
+            document.getElementById(`slot${stopCount}`).src = `images/${symbol}`;
 
             if (stopCount === 3) {
                 document.getElementById("stopBtn").disabled = true;
@@ -133,6 +108,14 @@
                 document.getElementById("result").textContent = result;
             }
         }
+
+        function getReel(i) {
+            if (i === 1) return reel1;
+            if (i === 2) return reel2;
+            if (i === 3) return reel3;
+            return [];
+        }
     </script>
+
 </body>
 </html>
