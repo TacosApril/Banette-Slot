@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>簡単スロット</title>
+    <style>
+        #slots {
+            font-size: 60px;
+            margin: 20px;
+        }
+
+        button {
+            font-size: 24px;
+            padding: 10px 20px;
+        }
+
+        #result {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ひさ「肖像権侵害スロット」</h1>
+    <div id="slots">
+        <img id="slot1" src="images/hisa.png" width="100">
+        <img id="slot2" src="images/hisa.png" width="100">
+        <img id="slot3" src="images/hisa.png" width="100">
+        <!--<img id="slot4" src="images/ken.png" width="100">
+        <img id="slot5" src="images/odaijini.png" width="100">
+        <img id="slot6" src="images/papa.png" width="100">
+        <img id="slot7" src="images/pepa-.png" width="100">
+        <img id="slot8" src="images/tamago.png" width="100">
+        <img id="slot9" src="images/temiruspe.png" width="100">-->
+    </div>
+
+    <button onclick="spin()" id="startBtn">スタート</button>
+    <button onclick="stopNext()" id="stopBtn" disabled>ストップ</button>
+    <p id="result"></p>
+
+
+    <script>
+        // 各スロット（リール）の絵柄順（好きな順に並べてOK）
+        const reel1 = [
+            "papa.png", "temiruspe.png", "odaijini.png", "ken.png", "pepa-.png", "hisa.png", "ken2.png"
+            , "temiruspe.png", "tamago.png", "papa.png", "hisa.png", "odaijini.png", "papa.png"
+            , "hisaspe.png", "ken.png", "pepa-.png", "temiruspe.png", "kaitoshi.png", "papa.png", "ken2.png", "ken2.png"
+            , "hisa.png", "papa.png", "ken2.png", "hisa.png", "odaijini.png", "tamago.png"
+            , "pepa-.png", "hisaspe.png", "kaitoshi.png", "odaijini.png", "hisaspe.png", "ken2.png"
+        ];
+        const reel2 = [
+            "tamago.png", "hisa.png", "papa.png", "pepa-.png", "temiruspe.png", "odaijini.png", "ken2.png",
+            "hisaspe.png", "ken2.png", "tamago.png", "papa.png", "ken.png", "hisaspe.png", "ken2.png",
+            "papa.png", "hisa.png", "ken.png", "temiruspe.png", "kaitoshi.png", "hisa.png", "ken2.png", "ken2.png",
+            "papa.png", "hisa.png", "hisaspe.png", "odaijini.png", "tamago.png", "papa.png",
+            "pepa-.png", "ken2.png", "odaijini.png", "kaitoshi.png"
+
+        ];
+        const reel3 = [
+            "tamago.png", "ken.png", "hisa.png", "pepa-.png", "papa.png", "tamago.png", "ken2.png", "ken2.png",
+            "hisa.png", "odaijini.png", "temiruspe.png", "papa.png", "hisaspe.png", "tamago.png",
+            "kaitoshi.png", "hisa.png", "ken2.png", "pepa-.png", "hisa.png", "tamago.png", "ken2.png",
+            "ken2.png", "papa.png", "tamago.png", "odaijini.png", "temiruspe.png", "ken.png", "ken2.png",
+            "hisaspe.png", "pepa-.png", "ken2.png", "hisa.png", "kaitoshi.png", "tamago.png",
+            "odaijini.png", "hisa.png", "papa.png"
+
+        ];
+
+        let intervals = [];
+        let stopCount = 0;
+        let indexes = [0, 0, 0]; // 各スロットの現在位置
+
+        function spin() {
+            document.getElementById("result").textContent = "";
+            stopCount = 0;
+            document.getElementById("startBtn").disabled = true;
+            document.getElementById("stopBtn").disabled = false;
+
+            indexes = [0, 0, 0];
+
+            for (let i = 1; i <= 3; i++) {
+                intervals[i] = setInterval(() => {
+                    indexes[i - 1] = (indexes[i - 1] + 1) % getReel(i).length;
+                    const symbol = getReel(i)[indexes[i - 1]];
+                    document.getElementById(`slot${i}`).src = `images/${symbol}`;
+                }, 140);
+            }
+        }
+
+        function stopNext() {
+            stopCount++;
+
+            clearInterval(intervals[stopCount]);
+
+            const symbol = getReel(stopCount)[indexes[stopCount - 1]];
+            document.getElementById(`slot${stopCount}`).src = `images/${symbol}`;
+
+            if (stopCount === 3) {
+                document.getElementById("stopBtn").disabled = true;
+                document.getElementById("startBtn").disabled = false;
+
+                const s1 = document.getElementById("slot1").src;
+                const s2 = document.getElementById("slot2").src;
+                const s3 = document.getElementById("slot3").src;
+
+                const result = (s1 === s2 && s2 === s3) ? "🎉あたり！" : "😢はずれ…";
+                document.getElementById("result").textContent = result;
+            }
+        }
+
+        function getReel(i) {
+            if (i === 1) return reel1;
+            if (i === 2) return reel2;
+            if (i === 3) return reel3;
+            return [];
+        }
+    </script>
+
+</body>
+</html>
