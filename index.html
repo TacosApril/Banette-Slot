@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>簡単スロット</title>
+    <style>
+        #slots {
+            font-size: 60px;
+            margin: 20px;
+        }
+
+        button {
+            font-size: 24px;
+            padding: 10px 20px;
+        }
+
+        #result {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>スロカス</h1>
+    <div id="slots">
+        <img id="slot1" src="images/hisa.png" width="100">
+        <img id="slot2" src="images/hisa.png" width="100">
+        <img id="slot3" src="images/hisa.png" width="100">
+        <!--<img id="slot4" src="images/ken.png" width="100">
+        <img id="slot5" src="images/odaijini.png" width="100">
+        <img id="slot6" src="images/papa.png" width="100">
+        <img id="slot7" src="images/pepa-.png" width="100">
+        <img id="slot8" src="images/tamago.png" width="100">
+        <img id="slot9" src="images/temiruspe.png" width="100">-->
+    </div>
+
+    <button onclick="spin()" id="startBtn">スタート</button>
+    <button onclick="stopNext()" id="stopBtn" disabled>ストップ</button>
+    <p id="result"></p>
+
+
+    <script>
+        const symbols = [
+            "hisa.png", "hisaspe.png", "kaitoshi.png",
+            "ken.png", "odaijini.png", "papa.png",
+            "pepa-.png", "tamago.png", "temiruspe.png"
+        ];
+
+        // 出現率（例）：hisaが出やすいように複数入れている
+        const s1Weights = [
+            "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png"
+            , "hisaspe.png", "hisaspe.png", "hisaspe.png"
+            , "kaitoshi.png", "kaitoshi.png"
+            , "ken.png", "ken.png"
+            , "odaijini.png", "odaijini.png", "odaijini.png", "odaijini.png"
+            , "papa.png", "papa.png", "papa.png", "papa.png", "papa.png", "papa.png", "papa.png"
+            , "pepa-.png", "pepa-.png", "pepa-.png"
+            , "tamago.png", "tamago.png"
+            , "temiruspe.png", "temiruspe.png", "temiruspe.png", "temiruspe.png"
+        ];
+
+        const s2Weights = [
+            "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png"
+            , "hisaspe.png", "hisaspe.png", "hisaspe.png"
+            , "kaitoshi.png", "kaitoshi.png"
+            , "ken.png", "ken.png"
+            , "odaijini.png", "odaijini.png", "odaijini.png"
+            , "papa.png", "papa.png", "papa.png", "papa.png", "papa.png"
+            , "pepa-.png", "pepa-.png"
+            , "tamago.png", "tamago.png", "tamago.png"
+            , "temiruspe.png", "temiruspe.png"
+        ];
+
+        const s3Weights = [
+            "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png", "hisa.png"
+            , "hisaspe.png", "hisaspe.png", "hisaspe.png"
+            , "kaitoshi.png", "kaitoshi.png"
+            , "ken.png", "ken.png"
+            , "odaijini.png", "odaijini.png", "odaijini.png"
+            , "papa.png", "papa.png", "papa.png"
+            , "pepa-.png", "pepa-.png", "pepa-.png"
+            , "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png", "tamago.png"
+            , "temiruspe.png", "temiruspe.png"
+        ];
+
+        let intervals = [];
+        let stopCount = 0;
+
+        function getRandomSymbolFrom(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function spin() {
+            document.getElementById("result").textContent = "";
+            stopCount = 0;
+            document.getElementById("startBtn").disabled = true;
+            document.getElementById("stopBtn").disabled = false;
+
+            for (let i = 1; i <= 3; i++) {
+                intervals[i] = setInterval(() => {
+                    let rand;
+                    if (i === 1) rand = getRandomSymbolFrom(s1Weights);
+                    else if (i === 2) rand = getRandomSymbolFrom(s2Weights);
+                    else rand = getRandomSymbolFrom(s3Weights);
+
+                    document.getElementById(`slot${i}`).src = `images/${rand}`;
+                }, 200);
+            }
+        }
+
+        function stopNext() {
+            stopCount++;
+
+            clearInterval(intervals[stopCount]);
+
+            let final;
+            if (stopCount === 1) final = getRandomSymbolFrom(s1Weights);
+            else if (stopCount === 2) final = getRandomSymbolFrom(s2Weights);
+            else final = getRandomSymbolFrom(s3Weights);
+
+            document.getElementById(`slot${stopCount}`).src = `images/${final}`;
+
+            if (stopCount === 3) {
+                document.getElementById("stopBtn").disabled = true;
+                document.getElementById("startBtn").disabled = false;
+
+                const s1 = document.getElementById("slot1").src;
+                const s2 = document.getElementById("slot2").src;
+                const s3 = document.getElementById("slot3").src;
+
+                const result = (s1 === s2 && s2 === s3) ? "🎉あたり！" : "😢はずれ…";
+                document.getElementById("result").textContent = result;
+            }
+        }
+    </script>
+</body>
+</html>
